@@ -58,6 +58,7 @@
   flex-direction: column;
   border-radius: 12px;
   background-color: white;
+  text-align: center;
 }
 
 .todo__main-weather {
