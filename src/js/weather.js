@@ -8,10 +8,9 @@ const Weather = {
     this.getCuurrentGPS();
   },
   callApi(lat, lon) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`;
+    const url = `https://weather-apideok.herokuapp.com/api/${lat}/${lon}`;
     return fetch(url, {
       method: 'GET',
-      mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
@@ -22,14 +21,27 @@ const Weather = {
     }).then(x => x.json());
   },
   getCuurrentGPS() {
-    const positionHandler = ({coords}) => {
+    const positionHandler = async ({coords}) => {
       const {latitude, longitude} = coords;
-      console.log(this.callApi(latitude, longitude));
+      const fetchData = await this.callApi(latitude, longitude);
+      const weather = fetchData.weather[0];
+
+      const render = (icon, desc) => {
+        const $icon = document.querySelector('.todo__main-weather>img');
+        const $desc = document.querySelector('.todo__main-weather>.desc');
+        const url = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+        
+        $icon.src = url;
+        $desc.innerHTML = desc;
+      }
+
+      render(weather.icon, weather.description);
+      
     }
     navigator.geolocation.getCurrentPosition(
       positionHandler, 
       () => {console.warn('geolocation not allow')})
-  }
+  },
 }
 
 export default Weather;
